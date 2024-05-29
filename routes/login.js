@@ -3,18 +3,19 @@ var router = express.Router();
 var dbConn = require('../config/db');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const auth = require('../config/auth').login;
 
 
 
 // render login jade page
-router.get('/', function (req, res, next) {
+router.get('/', auth, function (req, res, next) {
   res.render('login', {
     bottom_text: ''
   });
 });
 
 // login auth
-router.post('/', function (req, res) {
+router.post('/',  function (req, res) {
 
   username = req.body.username;
   password = req.body.password;
@@ -36,12 +37,19 @@ router.post('/', function (req, res) {
     console.log(user);
     bcrypt.compare(password, user.password).then(function (result) {
       if (result) {
+
+        const options = {
+          expiresIn: 60 * 60
+        }
+
         const token = jwt.sign({
           username: username,
           admin: user.isadmin
-        }, process.env.JWT_SECRET);
+        }, process.env.JWT_SECRET, options);
+
         res.cookie('jwt', token).status(200);
         res.redirect("../");
+
       } else {
         res.render('login', {
           bottom_text: 'Invalid username or password'

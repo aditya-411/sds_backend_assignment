@@ -5,10 +5,11 @@ const dotenv = require("dotenv");
 dotenv.config();
 var dbConn = require('../config/db');
 const saltRounds = parseInt(process.env.SALT_ROUNDS);
+const auth = require('../config/auth').login;
 
 
 // render login jade page
-router.get('/', function (req, res, next) {
+router.get('/', auth, function (req, res, next) {
     res.render('register', {
         bottom_text: ''
     });
