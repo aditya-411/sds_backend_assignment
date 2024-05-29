@@ -48,7 +48,11 @@ router.post('/',  function (req, res) {
         }, process.env.JWT_SECRET, options);
 
         res.cookie('jwt', token).status(200);
-        res.redirect("../");
+        if (user.isadmin) {
+          res.redirect('/admin');
+        } else {
+          res.redirect('/user');
+        }
 
       } else {
         res.render('login', {

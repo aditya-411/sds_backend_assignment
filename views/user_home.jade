@@ -1,0 +1,16 @@
+doctype html
+html
+    head
+        title Welcome to the Library Management Portal
+    body
+        h1 Welcome to the Library Management Portal
+        p Hello, #{username}! Here are some options for you:
+        ul
+            li
+                a(href="/user/browse") Browse Books
+            li
+                a(href="/my-books") My Books
+            li
+                a(href="/profile") Update password
+            li
+                a(href="/logout") Logout

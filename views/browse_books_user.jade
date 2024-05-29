@@ -1,0 +1,84 @@
+doctype html
+html
+    head
+        title Browse Books
+        style 
+            h1, h2{
+                text-align : center
+            }
+            .book-item {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                margin-bottom: 10px;
+                align: center;
+                font-size: 2rem;
+                padding: 20px;
+                }
+
+                .book-title {
+                font-weight: bold;
+                font-size: 18px;
+                margin-bottom: 5px;
+                width: 30vw;
+                text-align: center;
+                font-size: 2rem;
+                padding: 20px;
+                }
+
+                .book-author {
+                font-style: italic;
+                margin-bottom: 5px;
+                width: 15vw;
+                text-align: center;
+                font-size: 2rem;
+                padding: 20px;
+                }
+
+                .book-publisher {
+                margin-bottom: 5px;
+                width: 15vw;
+                text-align: center;
+                font-size: 2rem;
+                padding: 20px;
+                }
+
+                button {
+                background-color: #00B7FF;
+                color: white;
+                border: none;
+                padding: 5px 10px;
+                border-radius: 3px;
+                cursor: pointer;
+                width: 15vw;
+                font-size: 2rem;
+                padding: 20px;
+                }
+
+    body
+        h1 Browse Books
+        h2 Book List
+        table
+            thead
+                tr
+                    th(class='header') Book Title
+                    th(class='header') Author
+                    th(class='header') Publisher
+                    th(class='header') Action
+            tbody
+                each book in books
+                    tr
+                        td(class='book-title')= book.title
+                        td(class='book-author')= book.author
+                        td(class='book-publisher')= book.publisher
+                        td
+                                form(action="/user/issue", method="POST")
+                                    input(type="hidden", name="title", value=book.title)
+                                    input(type="hidden", name="author", value=book.author)
+                                    input(type="hidden", name="publisher", value=book.publisher)
+                                    button(type="submit") Issue
+        
+    
