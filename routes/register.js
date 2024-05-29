@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
 dotenv.config();
 var dbConn = require('../config/db');
