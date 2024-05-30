@@ -4,32 +4,34 @@ function AuthMiddleware(req, res, next) {
   const token = req.cookies.jwt;
   if (!token) {
     res.redirect("/login");
-    return;
+  } else {
+    jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
+      if (err) {
+        res.redirect("/login");
+      } else {
+        req.user = decoded;
+        next();
+      }
+    });
   }
-  jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
-    if (err) {
-      res.redirect("/login");
-      return;
-    }
-    req.user = decoded;
-    next();
-  });
 }
 
 function AuthMiddleware_login(req, res, next) {
   const token = req.cookies.jwt;
   if (!token) {
     next();
+  } else {
+    jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
+      if (err) {
+        next();
+      } else {
+        res.redirect("/");
+      }
+    });
   }
-  jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
-    if (err) {
-      next();
-    }
-    else{
-    res.redirect("/");
-    return;
-    }
-  });
 }
 
-module.exports = {normal:AuthMiddleware, login:AuthMiddleware_login};
+module.exports = {
+  normal: AuthMiddleware,
+  login: AuthMiddleware_login
+};

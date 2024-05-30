@@ -6,7 +6,6 @@ var dbConn = require('../config/db');
 /* GET users listing. */
 router.get('/', auth, function(req, res, next) {
   res.render('user_home', {username: req.user.username});
-  console.log(req.user);
 });
 
 router.get('/browse', auth, function(req, res, next) {
@@ -58,6 +57,11 @@ router.post('/confirm', auth, function(req, res, next) {
     
     
   });
+});
+
+router.post('/logout', auth, function(_, res) {
+  res.clearCookie('jwt');
+  res.redirect('/');
 });
 
 

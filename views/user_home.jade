@@ -9,8 +9,9 @@ html
             li
                 a(href="/user/browse") Browse Books
             li
-                a(href="/my-books") My Books
+                a(href="/my-books") My Books and history
             li
-                a(href="/profile") Update password
+                a(href="/update_password") Update password
             li
-                a(href="/logout") Logout
+                form(action="/user/logout", method="post")
+                    button(type="submit") Logout

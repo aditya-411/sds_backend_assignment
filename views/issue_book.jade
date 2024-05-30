@@ -70,4 +70,5 @@ html
             input(type="hidden", name="publisher", value=book.publisher)
             button.confirm-button(type="submit", style="display: #{show_button ? 'flex' : 'None'}") Confirm Issue Request
 
-        p(class='bottom')= message       
+        p(class='bottom', style=`display: ${message ? 'block' : 'none'}`)= message       
+        button.confirm-button(type="button", class="button", onclick="window.location.href='/user'") Go to Home

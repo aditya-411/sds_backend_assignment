@@ -34,7 +34,6 @@ router.post('/',  function (req, res) {
       return;
     }
     var user = result[0];
-    console.log(user);
     bcrypt.compare(password, user.password).then(function (result) {
       if (result) {
 
