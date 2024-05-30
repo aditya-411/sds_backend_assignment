@@ -24,20 +24,38 @@ router.post('/issue', auth, function(req, res, next) {
 });
 
 router.post('/confirm', auth, function(req, res, next) {
-  dbConn.query("SELECT COUNT(*) AS count FROM history", function(err, result) {
+  dbConn.query("SELECT * FROM pending_approvals WHERE username = ?", [req.user.username], function(err, result) {
     if (err) {
-      res.render('error', {error: err});
+      res.render('error', {error: err, message: err.message});
       return;
     }
-    var id = result[0].count + 1;
-    console.log(id);
-    dbConn.query("INSERT INTO pending_approvals (title, id, username) VALUES (?, ?, ?)", [req.body.title, id, req.user.username], function(err, result) {
+    if (result.length > 0) {
+      if (result[0]['title'] === req.body.title){
+      res.render('issue_book', {book: req.body, message:'You already have an issue request pending for this book', show_button: false});
+      return
+    } else{
+      res.render('issue_book', {book: req.body, message:'You already have an issue request pending for a different book', show_button: false});
+      return;
+    }
+  }
+  dbConn.query("SELECT * FROM currently_issued WHERE username = ? AND title = ?", [req.user.username, req.body.title], function(err, result) {
+    if (err) {
+      res.render('error', {error: err, message: err.message});
+      return;
+    }
+    if (result.length > 0) {
+      res.render('issue_book', {book: req.body, message:'You already have this book issued', show_button: false});
+      return;
+    }
+    dbConn.query("INSERT INTO pending_approvals (title, username) VALUES (?, ?)", [req.body.title, req.user.username], function(err, result) {
       if (err) {
-        res.render('error', {error: err});
+        res.render('error', {error: err, message: err.message});
         return;
       }
-      res.render('issue_book', {book: req.body, message:'book issue requested successfully', show_button: false});
+      res.render('issue_book', {book: req.body, message:'Book issue requested successfully', show_button: false});
     });
+  });
+    
     
   });
 });
