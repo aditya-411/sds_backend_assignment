@@ -64,7 +64,7 @@ html
             p Book Name: #{book.title}
             p Publisher: #{book.publisher}
             p Author: #{book.author}
-        form(action="/user/confirm", method="POST")
+        form(action="/user/issue_confirm", method="POST")
             input(type="hidden", name="title", value=book.title)
             input(type="hidden", name="author", value=book.author)
             input(type="hidden", name="publisher", value=book.publisher)

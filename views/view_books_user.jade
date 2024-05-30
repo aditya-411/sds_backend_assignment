@@ -1,0 +1,104 @@
+doctype html
+html
+    head
+        title User Book View
+        style.
+            body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 2%;
+            }
+
+            h1 {
+            text-align: center;
+            font-size: 3vw;
+            }
+
+            h2 {
+            margin-top: 3%;
+            font-size: 2vw;
+            }
+
+            .book-list {
+            overflow-y: scroll;
+            max-height: 30vh;
+            border: 1px solid #ccc;
+            padding: 2%;
+            margin-bottom: 4%;
+            }
+
+            table {
+            width: 100%;
+            border-collapse: collapse;
+            }
+
+            th, td {
+            border: 1px solid #ccc;
+            padding: 1.5%;
+            text-align: left;
+            font-size: 1.5vw;
+            }
+
+            .book-item {
+            margin-bottom: 2%;
+            }
+            
+    body
+        h1 User Book View
+        p(class='bottom', style=`display: ${message ? 'block' : 'none'}`)= message
+        h2 Current Books
+        .book-list
+            table
+                thead
+                    tr
+                        th ID
+                        th Title
+                        th Author
+                        th Issue Date
+                        th Last Date to Return
+                        th Actions
+                tbody
+                    each book in currentlyIssuedBooks
+                        tr.book-item
+                            td= book.id
+                            td= book.title
+                            td= allBooks.find(b => b.title === book.title).author
+                            td= new Date(book.issued_at).toLocaleDateString()
+                            td= new Date(new Date(book.issued_at).getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()
+                            td
+                                form(action="/user/return", method="POST")
+                                    input(type="hidden", name="title", value=book.title)
+                                    button(type="submit") Return
+        h2 Pending approvals
+        .book-list
+            table
+                thead
+                    tr
+                        th Title
+                        th Author
+                        th Type
+
+                tbody
+                    each book in pendingBooks
+                        tr.book-item
+                            td= book.title
+                            td= allBooks.find(b => b.title === book.title).author
+                            td= book.type === 0 ? "Return" : "Issue"
+        h2 Book History
+        .book-list
+            table
+                thead
+                    tr
+                        th ID
+                        th Title
+                        th Author
+                        th Issue Date
+                        th Return Date
+                tbody
+                    each book in bookHistory
+                        tr.book-item
+                            td= book.id
+                            td= book.title
+                            td= allBooks.find(b => b.title === book.title).author
+                            td= new Date(book.issued_at).toLocaleDateString()
+                            td= new Date(book.returned_at).toLocaleDateString()
