@@ -25,7 +25,11 @@ function AuthMiddleware_login(req, res, next) {
       if (err) {
         next();
       } else {
-        res.redirect("/");
+        if (decoded.admin === 0){
+          res.redirect("/user");
+        } else {
+          res.redirect("/admin");
+        }
       }
     });
   }

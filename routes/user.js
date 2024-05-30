@@ -59,10 +59,8 @@ router.post('/confirm', auth, function(req, res, next) {
   });
 });
 
-router.post('/logout', auth, function(_, res) {
-  res.clearCookie('jwt');
-  res.redirect('/');
-});
+
+
 
 
 module.exports = router;

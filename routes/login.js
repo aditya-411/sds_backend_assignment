@@ -63,4 +63,9 @@ router.post('/',  function (req, res) {
 
 });
 
+router.post('/logout', auth, function(_, res) {
+  res.clearCookie('jwt');
+  res.redirect('/');
+});
+
 module.exports = router;
