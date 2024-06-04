@@ -18,6 +18,9 @@ html
             li 
                 form(action="/user/request_admin", method="post")
                     button(type="submit") Request admin access
+            li(style=`display: ${locals.isadmin ? 'default' : 'none'}`) 
+                form(action="/admin/", method="get")
+                    button(type="submit") Admin Options
             li
                 form(action="/login/logout", method="post")
                     button(type="submit") Logout

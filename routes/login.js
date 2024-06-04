@@ -15,7 +15,7 @@ router.get('/', auth, function (req, res, next) {
 });
 
 // login auth
-router.post('/',  function (req, res) {
+router.post('/', auth,  function (req, res) {
 
   username = req.body.username;
   password = req.body.password;
@@ -48,7 +48,7 @@ router.post('/',  function (req, res) {
 
         res.cookie('jwt', token).status(200);
         if (user.isadmin) {
-          res.redirect('/admin');
+          res.redirect('/user');
         } else {
           res.redirect('/user');
         }

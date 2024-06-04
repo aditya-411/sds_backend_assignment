@@ -6,7 +6,8 @@ var dbConn = require('../config/db');
 /* GET users listing. */
 router.get('/', auth, function (req, res, next) {
   res.render('user_home', {
-    username: req.user.username
+    username: req.user.username,
+    isadmin: req.user.admin
   });
 });
 
