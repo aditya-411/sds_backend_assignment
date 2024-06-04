@@ -1,23 +1,23 @@
 doctype html
 html
     head
-        title Welcome to the Library Management Portal
+        title Admin Portal
     body
-        h1 Welcome to the Library Management Portal
+        h1 Welcome to the Admin Portal
         p Hello, #{username}! Here are some options for you:
         ul
             li
-                form(action="/user/browse", method="get")
-                    button(type="submit") Browse Books
+                form(action="/admin/books", method="get")
+                    button(type="submit") Manage book catalogue 
             li
-                form(action="/user/my_books", method="get")
-                    button(type="submit") My Books and history
+                form(action="/admin/requests", method="get")
+                    button(type="submit") Manage book requests
             li
-                form(action="/register/update_password", method="get")
-                    button(type="submit") Update password
-            li 
-                form(action="/user/request_admin", method="post")
-                    button(type="submit") Request admin access
+                form(action="/admin/acess", method="get")
+                    button(type="submit") Review admin access requests 
+            li
+                form(action="/user/", method="get")
+                    button(type="submit") Go back to home
             li
                 form(action="/login/logout", method="post")
                     button(type="submit") Logout
