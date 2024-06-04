@@ -45,7 +45,7 @@ html
             
     body
         h1 User Book View
-        p(class='bottom', style=`display: ${message ? 'block' : 'none'}`)= message
+        p(id='bottom', style=`display: ${message ? 'block' : 'none'}`)= message
         h2 Current Books
         .book-list
             table
@@ -68,6 +68,10 @@ html
                             td
                                 form(action="/user/return", method="POST")
                                     input(type="hidden", name="title", value=book.title)
+                                    input(type="hidden", name="currentlyIssuedBooks", value=currentlyIssuedBooks)
+                                    input(type="hidden", name="pendingBooks", value=pendingBooks)
+                                    input(type="hidden", name="bookHistory", value=bookHistory)
+                                    input(type="hidden", name="allBooks", value=allBooks)
                                     button(type="submit") Return
         h2 Pending approvals
         .book-list
