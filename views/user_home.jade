@@ -15,7 +15,7 @@ html
             li
                 form(action="/register/update_password", method="get")
                     button(type="submit") Update password
-            li 
+            li(style=`display: ${locals.isadmin ? 'none' : 'default'}`) 
                 form(action="/user/request_admin", method="post")
                     button(type="submit") Request admin access
             li(style=`display: ${locals.isadmin ? 'default' : 'none'}`) 
