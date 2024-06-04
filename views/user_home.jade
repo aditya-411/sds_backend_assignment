@@ -7,11 +7,18 @@ html
         p Hello, #{username}! Here are some options for you:
         ul
             li
-                a(href="/user/browse") Browse Books
+                form(action="/user/browse", method="get")
+                    button(type="submit") Browse Books
             li
-                a(href="/user/my_books") My Books and history
+                form(action="/user/my_books", method="get")
+                    button(type="submit") My Books and history
             li
-                a(href="/register/update_password") Update password
+                form(action="/register/update_password", method="get")
+                    button(type="submit") Update password
+            li 
+                form(action="/user/request_admin", method="post")
+                    button(type="submit") Request admin access
             li
                 form(action="/login/logout", method="post")
                     button(type="submit") Logout
+        p= locals.message ? message : ''

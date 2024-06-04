@@ -176,7 +176,6 @@ router.post('/return', auth, function (req, res, next) {
               });
               return;
             }
-  
             if (result.length > 0) {
               res.render('view_books_user', {
                 allBooks: booksResult,
@@ -185,8 +184,8 @@ router.post('/return', auth, function (req, res, next) {
                 pendingBooks: pendingResult,
                 message: 'You have already requested to return this book'
               });
-            }
-            else{
+              return;
+            } else {
               dbConn.query("INSERT INTO pending_approvals (title, username, type) VALUES (?, ?, false)", [req.body.title, req.user.username], function (err, result) {
                 if (err) {
                   res.render('error', {
@@ -195,6 +194,11 @@ router.post('/return', auth, function (req, res, next) {
                   });
                   return;
                 }
+                pendingResult.push({
+                  title: req.body.title,
+                  username: req.user.username,
+                  type: false
+                });
                 res.render('view_books_user', {
                   allBooks: booksResult,
                   currentlyIssuedBooks: issuedResult,
@@ -203,17 +207,50 @@ router.post('/return', auth, function (req, res, next) {
                   message: 'Book return requested successfully'
                 });
               });
-            
+
             }
-          }
-          );
-          
+          });
+
         });
       });
     });
   });
   return;
 });
+
+
+router.post('/request_admin', auth, function (req, res, next) {
+  dbConn.query("SELECT * FROM admin_requests WHERE username = ?", [req.user.username], function (err, result) {
+    if (err) {
+      res.render('error', {
+        error: err,
+        message: err.message
+      });
+      return;
+    }
+    if (result.length > 0) {
+      res.render('user_home', {
+        username: req.user.username,
+        message: 'You already have a pending admin request'
+      });
+      return;
+    }
+    dbConn.query("INSERT INTO admin_requests (username) VALUES (?)", [req.user.username], function (err, result) {
+      if (err) {
+        res.render('error', {
+          error: err,
+          message: err.message
+        });
+        return;
+      }
+      res.render('user_home', {
+        username: req.user.username,
+        message: 'Admin request submitted successfully'
+      });
+    });
+  });
+});
+
 
 
 

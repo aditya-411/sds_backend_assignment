@@ -42,9 +42,17 @@ html
             .book-item {
             margin-bottom: 2%;
             }
+            .header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction:row;
+            }
             
     body
-        h1 User Book View
+        div(class="header")
+            h1 User Book View
+            a(href="/user") Back to Home
         p(id='bottom', style=`display: ${message ? 'block' : 'none'}`)= message
         h2 Current Books
         .book-list
@@ -58,21 +66,25 @@ html
                         th Last Date to Return
                         th Actions
                 tbody
-                    each book in currentlyIssuedBooks
-                        tr.book-item
-                            td= book.id
-                            td= book.title
-                            td= allBooks.find(b => b.title === book.title).author
-                            td= new Date(book.issued_at).toLocaleDateString()
-                            td= new Date(new Date(book.issued_at).getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()
-                            td
-                                form(action="/user/return", method="POST")
-                                    input(type="hidden", name="title", value=book.title)
-                                    input(type="hidden", name="currentlyIssuedBooks", value=currentlyIssuedBooks)
-                                    input(type="hidden", name="pendingBooks", value=pendingBooks)
-                                    input(type="hidden", name="bookHistory", value=bookHistory)
-                                    input(type="hidden", name="allBooks", value=allBooks)
-                                    button(type="submit") Return
+                    if currentlyIssuedBooks.length === 0
+                        tr
+                            td(colspan="6") No book is issued
+                    else
+                        each book in currentlyIssuedBooks
+                            tr.book-item
+                                td= book.id
+                                td= book.title
+                                td= allBooks.find(b => b.title === book.title).author
+                                td= new Date(book.issued_at).toLocaleDateString()
+                                td= new Date(new Date(book.issued_at).getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()
+                                td
+                                    form(action="/user/return", method="POST")
+                                        input(type="hidden", name="title", value=book.title)
+                                        input(type="hidden", name="currentlyIssuedBooks", value=currentlyIssuedBooks)
+                                        input(type="hidden", name="pendingBooks", value=pendingBooks)
+                                        input(type="hidden", name="bookHistory", value=bookHistory)
+                                        input(type="hidden", name="allBooks", value=allBooks)
+                                        button(type="submit") Return
         h2 Pending approvals
         .book-list
             table
@@ -83,11 +95,15 @@ html
                         th Type
 
                 tbody
-                    each book in pendingBooks
-                        tr.book-item
-                            td= book.title
-                            td= allBooks.find(b => b.title === book.title).author
-                            td= book.type === 0 ? "Return" : "Issue"
+                    if pendingBooks.length === 0
+                        tr
+                            td(colspan="3") No approval is pending
+                    else
+                        each book in pendingBooks
+                            tr.book-item
+                                td= book.title
+                                td= allBooks.find(b => b.title === book.title).author
+                                td= book.type === 0 ? "Return" : "Issue"
         h2 Book History
         .book-list
             table

@@ -63,7 +63,7 @@ router.post('/',  function (req, res) {
 
 });
 
-router.post('/logout', auth, function(_, res) {
+router.post('/logout', function(_, res) {
   res.clearCookie('jwt');
   res.redirect('/');
 });
