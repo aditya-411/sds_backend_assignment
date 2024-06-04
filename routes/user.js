@@ -15,7 +15,8 @@ router.get('/browse', auth, function (req, res, next) {
   dbConn.query("SELECT * FROM books", function (err, result) {
     if (err) {
       res.render('error', {
-        error: err
+        error: err,
+        message: err.message
       });
       return;
     }
