@@ -1,7 +1,7 @@
 doctype html
 html
     head
-        title Browse Books
+        title Book Catalogue
         style 
             h1, h2{
                 text-align : center
@@ -85,10 +85,17 @@ html
                 border: 1px solid #ccc;
                 
             }
+            .header1{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction:row;
+            }
 
     body
-        h1 Browse Books
-        h2 Book List
+        div(class="header1")
+            h1 Books Catalogue
+            a(href="/admin") Back to admin options
         p= locals.message ? message : ''
         div(class="add")
             form(action="/admin/add", method="POST")

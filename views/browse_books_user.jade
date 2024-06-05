@@ -57,10 +57,20 @@ html
                 font-size: 2rem;
                 padding: 20px;
                 }
+            td, th {
+                border: 1px solid black;
+            }
+            .header1{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction:row;
+            }
 
     body
-        h1 Browse Books
-        h2 Book List
+        div(class="header1")
+            h1 Browse books
+            a(href="/user") Back to Home
         table
             thead
                 tr

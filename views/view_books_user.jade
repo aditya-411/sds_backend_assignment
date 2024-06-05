@@ -115,10 +115,14 @@ html
                         th Issue Date
                         th Return Date
                 tbody
-                    each book in bookHistory
-                        tr.book-item
-                            td= book.id
-                            td= book.title
-                            td= allBooks.find(b => b.title === book.title).author
-                            td= new Date(book.issued_at).toLocaleDateString()
-                            td= new Date(book.returned_at).toLocaleDateString()
+                    if bookHistory.length === 0
+                        tr
+                            td(colspan="5") You have no book history
+                    else
+                        each book in bookHistory
+                            tr.book-item
+                                td= book.id
+                                td= book.title
+                                td= allBooks.find(b => b.title === book.title).author
+                                td= new Date(book.issued_at).toLocaleDateString()
+                                td= new Date(book.returned_at).toLocaleDateString()
