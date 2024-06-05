@@ -103,7 +103,8 @@ html
                         th(class='header') Book Title
                         th(class='header') Author
                         th(class='header') Publisher
-                        th(class='header') Action
+                        th(class='header') Remove 
+                        th(class='header') Edit
 
                 tbody
                     each book in books
@@ -114,4 +115,10 @@ html
                             td
                                 form(action="/admin/remove", method="POST")
                                     input(type="hidden", name="title", value=book.title)
+                                    input(type="hidden", name="author", value=book.author)
+                                    input(type="hidden", name="publisher", value=book.publisher)
                                     button(type="submit") Remove
+                            td
+                                form(action="/admin/update", method="POST")
+                                    input(type="hidden", name="title", value=book.title)
+                                    button(type="submit") Edit
