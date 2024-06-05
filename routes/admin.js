@@ -142,4 +142,145 @@ router.post('/update_confirm', auth, function (req, res, next) {
 });
 
 
+router.get('/requests', auth, function (req, res, next) {
+    dbConn.query("SELECT * FROM pending_approvals", function (err, result) {
+        if (err) {
+            res.render('error', {
+                error: err
+            });
+            return;
+        }
+        res.render('manage_book_requests', {
+            requests: result
+        });
+    });
+});
+
+router.post('/requests/approve', auth, function (req, res, next) {
+    if (req.body.type === '1') {
+        dbConn.query("SELECT COUNT(*) AS count FROM history", function (err, result) {
+            if (err) {
+                res.render('error', {
+                    error: err,
+                    message: err.message
+                });
+                return;
+            }
+            var id = result[0].count + 1;
+            var query = `INSERT INTO history (id, username, title, issued_at, returned_at) VALUES (${id}, '${req.body.username}', '${req.body.title}', CURDATE(), DATE_ADD(CURDATE(), INTERVAL 7 DAY));`;
+            dbConn.query(query, function (err, result) {
+                if (err) {
+                    res.render('error', {
+                        error: err,
+                        message: err.message
+                    });
+                    return;
+                }
+                dbConn.query(`DELETE FROM pending_approvals WHERE username='${req.body.username}' AND title='${req.body.title}';`, function (err, result) {
+                    if (err) {
+                        res.render('error', {
+                            error: err,
+                            message: err.message
+                        });
+                        return;
+                    }
+                    dbConn.query(`INSERT INTO currently_issued (id, username, title, issued_at) VALUES (${id}, '${req.body.username}', '${req.body.title}', CURDATE());`, function (err, result) {
+                        if (err) {
+                            res.render('error', {
+                                error: err,
+                                message: err.message
+                            });
+                            return;
+                        }
+                        dbConn.query("SELECT * FROM pending_approvals", function (err, result) {
+                            if (err) {
+                                res.render('error', {
+                                    error: err,
+                                    message: err.message
+                                });
+                                return;
+                            }
+                            res.render('manage_book_requests', {
+                                requests: result,
+                                message: 'Issue request approved successfully'
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    } else if (req.body.type === '0') {
+        dbConn.query(`DELETE FROM pending_approvals WHERE username='${req.body.username}' AND title='${req.body.title}';`, function (err, result) {
+            if (err) {
+                res.render('error', {
+                    error: err,
+                    message: err.message
+                });
+                return;
+            }
+            dbConn.query(`DELETE FROM currently_issued WHERE username='${req.body.username}' AND title='${req.body.title}';`, function (err, result) {
+                if (err) {
+                    res.render('error', {
+                        error: err,
+                        message: err.message
+                    });
+                    return;
+                }
+                dbConn.query(`UPDATE history SET returned_at = CURDATE() WHERE username='${req.body.username}' AND title='${req.body.title}';`, function (err, result) {
+                    if (err) {
+                        res.render('error', {
+                            error: err,
+                            message: err.message
+                        });
+                        return;
+                    }
+                    dbConn.query("SELECT * FROM pending_approvals", function (err, result) {
+                        if (err) {
+                            res.render('error', {
+                                error: err,
+                                message: err.message
+                            });
+                            return;
+                        }
+                        res.render('manage_book_requests', {
+                            requests: result,
+                            message: 'Book returned successfully'
+                        });
+                    });
+                });
+            });
+        });
+    } else {
+        res.status(400).send('Bad Request');
+        return;
+    }
+});
+
+
+router.post('/requests/deny', auth, function (req, res, next) {
+    dbConn.query(`DELETE FROM pending_approvals WHERE username='${req.body.username}' AND title='${req.body.title}';`, function (err, result) {
+        if (err) {
+            res.render('error', {
+                error: err,
+                message: err.message
+            });
+            return;
+        }
+        dbConn.query("SELECT * FROM pending_approvals", function (err, result) {
+            if (err) {
+                res.render('error', {
+                    error: err,
+                    message: err.message
+                });
+                return;
+            }
+            res.render('manage_book_requests', {
+                requests: result,
+                message: 'Request denied successfully'
+            });
+        });
+    });
+});
+
+
 module.exports = router;
