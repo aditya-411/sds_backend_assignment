@@ -1,0 +1,78 @@
+doctype html
+html
+    head
+        title Update book
+        style.
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f2f2f2;
+                margin: 0;
+                padding: 20px;
+            }
+            
+            h1 {
+                color: #333;
+                text-align: center;
+            }
+            
+            .book-details {
+                background-color: #fff;
+                border-radius: 5px;
+                padding: 20px;
+                margin-top: 20px;
+            }
+            
+            h2 {
+                color: #333;
+                margin-bottom: 10px;
+            }
+            
+            p {
+                margin: 5px 0;
+            }
+            
+            button.confirm-button {
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                border-radius: 5px;
+                cursor: pointer;
+                margin-top: 20px;
+            }
+            
+            button.confirm-button:hover {
+                background-color: #45a049;
+            }
+            .bottom {
+                background-color: #ddd;
+                padding: 10px;
+                text-align: center;
+                font-size: 1rem;
+                color: #555;
+            }
+
+            
+    body
+        h1 Update book details
+        div.book-details
+            h2 Current book Details
+            p Book Name: #{title}
+            p Publisher: #{publisher}
+            p Author: #{author}
+        div(class="add")
+            form(action="/admin/update_confirm", method="POST")
+                input(type="hidden", name="old_title", value=title)
+                input(type="hidden", name="old_author", value=author)
+                input(type="hidden", name="old_publisher", value=publisher)
+                input(type="text", name="title", placeholder="Enter book title")
+                input(type="text", name="author", placeholder="Enter book author")
+                input(type="text", name="publisher", placeholder="Enter book publisher")
+                button(type="submit", class="add") Update Book
+
+        p(class='bottom', style=`display: ${locals.message ? 'block' : 'none'}`)= locals.message       
+        button.confirm-button(type="button", class="button", onclick="window.location.href='/admin/books'") Go back to books
