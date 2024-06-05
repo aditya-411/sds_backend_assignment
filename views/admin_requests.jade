@@ -1,0 +1,60 @@
+doctype html
+html
+    head
+        title Admin Access Requests
+        style.
+            /* Add your CSS styles here */
+            .table-container {
+                overflow-y: scroll;
+                max-height: 300px; /* Adjust the height as needed */
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th, td {
+                padding: 8px;
+                text-align: left;
+                border: 1px solid #ddd;
+            }
+            .request .title {
+                font-weight: bold;
+            }
+            .buttons {
+                display:flex;
+                justify-content: space-between;
+                padding-left:20%;
+                padding-right: 20%;
+            }
+            .header1{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction:row;
+            }
+    body
+        div(class="header1")
+            h1 Manage Admin Access Requests
+            a(href="/admin") Back to admin options
+        p= locals.message ? message : ''
+        .table-container
+            table
+                thead
+                    tr
+                        th Username
+                        th Actions
+                tbody
+                    if requests.length === 0
+                        tr
+                            td(colspan="4") There are no pending requests
+                    else
+                        each request in requests
+                            tr
+                                td= request.username
+                                td(class = "buttons")
+                                    form(action="/admin/access/approve", method="post")
+                                        input(type="hidden", name="username", value=request.username)
+                                        button(type="submit") Approve
+                                    form(action="/admin/access/deny", method="post")
+                                        input(type="hidden", name="username", value=request.username)
+                                        button(type="submit") Deny

@@ -283,4 +283,77 @@ router.post('/requests/deny', auth, function (req, res, next) {
 });
 
 
+router.get('/access', auth, function (req, res, next) {
+    dbConn.query("SELECT * FROM admin_requests", function (err, result) {
+        if (err) {
+            res.render('error', {
+                error: err
+            });
+            return;
+        }
+        res.render('admin_requests', {
+            requests: result
+        });
+    });
+});
+
+router.post('/access/approve', auth, function (req, res, next) {
+    dbConn.query("UPDATE users SET isadmin=true WHERE username=?", [req.body.username], function (err, result) {
+        if (err) {
+            res.render('error', {
+                error: err,
+                message: err.message
+            });
+            return;
+        }
+        dbConn.query("DELETE FROM admin_requests WHERE username=?", [req.body.username], function (err, result) {
+            if (err) {
+                res.render('error', {
+                    error: err,
+                    message: err.message
+                });
+                return;
+            }
+            dbConn.query("SELECT * FROM admin_requests", function (err, result) {
+                if (err) {
+                    res.render('error', {
+                        error: err,
+                        message: err.message
+                    });
+                    return;
+                }
+                res.render('admin_requests', {
+                    requests: result,
+                    message: 'Access granted successfully'
+                });
+            });
+        });
+    });
+});
+
+router.post('/access/deny', auth, function (req, res, next) {
+    dbConn.query("DELETE FROM admin_requests WHERE username=?", [req.body.username], function (err, result) {
+        if (err) {
+            res.render('error', {
+                error: err,
+                message: err.message
+            });
+            return;
+        }
+        dbConn.query("SELECT * FROM admin_requests", function (err, result) {
+            if (err) {
+                res.render('error', {
+                    error: err,
+                    message: err.message
+                });
+                return;
+            }
+            res.render('admin_requests', {
+                requests: result,
+                message: 'Request denied successfully'
+            });
+        });
+    });
+});
+
 module.exports = router;
