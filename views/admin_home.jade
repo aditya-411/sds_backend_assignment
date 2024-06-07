@@ -2,6 +2,63 @@ doctype html
 html
     head
         title Admin Portal
+        style.
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f2f2f2;
+                margin: 0;
+                padding: 0;
+            }
+            
+            h1 {
+                color: #333;
+                text-align: center;
+                margin-top: 50px;
+            }
+            
+            p{
+                color: #4CAF50;
+                font-size: 1.5rem;
+                text-align:center;
+            }
+            
+            ul {
+                list-style-type: none;
+                padding: 0;
+                margin-top: 30px;
+                text-align: center;
+            }
+            
+            li {
+                margin-bottom: 10px;
+            }
+            
+            form {
+                display: inline-block;
+            }
+            
+            button {
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                cursor: pointer;
+            }
+            
+            p.message {
+                text-align: center;
+                margin-top: 20px;
+                color: #666;
+            }
+
+            .logout {
+                background-color: #f44336;
+                }
     body
         h1 Welcome to the Admin Portal
         p Hello, #{username}! Here are some options for you:
@@ -20,5 +77,5 @@ html
                     button(type="submit") Go back to home
             li
                 form(action="/login/logout", method="post")
-                    button(type="submit") Logout
-        p= locals.message ? message : ''
+                    button(type="submit", class='logout') Logout
+        p.message= locals.message ? message : ''
