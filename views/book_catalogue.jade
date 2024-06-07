@@ -3,106 +3,149 @@ html
     head
         title Book Catalogue
         style 
-            h1, h2{
-                text-align : center
-            }
-            table{
-                width: 100%;
+            h1, h2 {
+                text-align: center;
+                color: #333;
             }
             .book-item {
                 display: flex;
                 flex-direction: row;
                 align-items: center;
-                padding: 10px;
+                padding: 1rem;
                 border: 1px solid #ccc;
                 border-radius: 5px;
-                margin-bottom: 10px;
-                align: center;
+                margin-bottom: 1rem;
                 font-size: 2rem;
-                padding: 20px;
+                background-color: #f5f5f5;
             }
 
             .book-title {
                 font-weight: bold;
-                font-size: 18px;
-                margin-bottom: 5px;
-                width: 40%;
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+                width: 30vw;
                 text-align: center;
-                font-size: 2rem;
-                padding: 20px;
+                color: #333;
+            }
+
+            .book-issue {
+                text-align: center;
             }
 
             .book-author {
                 font-style: italic;
-                margin-bottom: 5px;
-                width: 20% ;
+                margin-bottom: 0.5rem;
+                width: 15vw;
                 text-align: center;
-                font-size: 2rem;
-                padding: 20px;
-            }
-
-            .table-container button{
-                width:100%;
+                color: #666;
             }
 
             .book-publisher {
-                margin-bottom: 5px;
-                width: 25%;
+                margin-bottom: 0.5rem;
+                width: 15vw;
                 text-align: center;
-                font-size: 2rem;
-                padding: 20px;
+                color: #666;
             }
 
             button {
-                background-color: #00B7FF;
+                background-color: #4CAF50;
                 color: white;
                 border: none;
-                padding: 5px 10px;
+                padding: 0.5rem 1rem;
                 border-radius: 3px;
                 cursor: pointer;
-                font-size: 2rem;
-                padding: 20px;
+                width: 15vw;
+                font-size: 1.5rem;
             }
 
-            .table-container {
-                height: 300px; /* Set the desired height */
-                width: 100%;
-                overflow: auto; /* Enable scrolling */
-                display:flex;
-                flex-direction: column;
-                align-items: center;
-            }
-            td, th, .table-container {
+            td, th {
                 border: 1px solid black;
+                padding: 0.5rem;
+                color: #333;
             }
 
-            .add form{
+            .header1 {
                 display: flex;
-                flex-direction: row;
-                align-items: center;
                 justify-content: space-between;
-                margin: 20px;
-                border: 1px solid #ccc;
-                
+                align-items: center;
+                flex-direction: row;
+                padding: 1rem;
+                color: white;
             }
-            .header1{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-direction:row;
+
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f5f5f5;
+                margin: 0;
+                padding: 0;
+            }
+
+            .search-bar {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 1rem;
+                flex-direction: row;
+                overflow-x: auto;
+                text-align: center;
+            }
+
+            .search-bar input[type="text"] {
+                padding: 0.5rem;
+                font-size: 1.5rem;
+                width: 30vw;
+                border-radius: 3px;
+                border: 1px solid #ccc;
+            }
+
+            .search-bar button[type="button"] {
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 3px;
+                cursor: pointer;
+                font-size: 1.5rem;
+                margin-left: 1rem;
+                width: fit-content;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            .header {
+                font-weight: bold;
+                background-color: #4CAF50;
+                color: white;
+                padding: 0.5rem;
+                text-align: center;
+            }
+
+            tbody tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+
+            tbody tr:hover {
+                background-color: #ddd;
             }
 
     body
         div(class="header1")
             h1 Books Catalogue
-            a(href="/admin") Back to admin options
+            form(action="/user")
+                button(type="submit") Back to Home
         p= locals.message ? message : ''
-        div(class="add")
+        div(class="search-bar")
+            input(type="text", id="searchInput", placeholder="Search for books by title...")
+            button(type="button", id="searchButton") Search
+        div(class="search-bar")
             form(action="/admin/add", method="POST")
                 input(type="text", name="title", placeholder="Enter book title")
                 input(type="text", name="author", placeholder="Enter book author")
                 input(type="text", name="publisher", placeholder="Enter book publisher")
-                button(type="submit", class="add") Add Book
+                button(type="submit") Add Book
         .table-container
             table
                 thead
@@ -131,3 +174,24 @@ html
                                     input(type="hidden", name="author", value=book.author)
                                     input(type="hidden", name="publisher", value=book.publisher)
                                     button(type="submit") Edit
+        script 
+            document.getElementById('searchButton').addEventListener('click', function() {
+                console.log("yes");
+                var input, filter, table, tr, td, i, txtValue;
+                input = document.getElementById("searchInput");
+                filter = input.value.toUpperCase();
+                table = document.getElementsByTagName("table")[0];
+                tr = table.getElementsByTagName("tr");
+
+                for (i = 0; i < tr.length; i++) {
+                    td = tr[i].getElementsByTagName("td")[0];
+                    if (td) {
+                        txtValue = td.textContent || td.innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            tr[i].style.display = "";
+                        } else {
+                            tr[i].style.display = "none";
+                        }
+                    }       
+                }
+            });
