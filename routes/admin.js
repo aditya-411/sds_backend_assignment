@@ -143,7 +143,7 @@ router.post('/update_confirm', auth, function (req, res, next) {
 
 
 router.get('/requests', auth, function (req, res, next) {
-    dbConn.query("SELECT * FROM pending_approvals", function (err, result) {
+    dbConn.query("SELECT * FROM transactions WHERE request_status!='0'", function (err, result) {
         if (err) {
             res.render('error', {
                 error: err
@@ -157,108 +157,7 @@ router.get('/requests', auth, function (req, res, next) {
 });
 
 router.post('/requests/approve', auth, function (req, res, next) {
-    if (req.body.type === '1') {
-        dbConn.query("SELECT COUNT(*) AS count FROM history", function (err, result) {
-            if (err) {
-                res.render('error', {
-                    error: err,
-                    message: err.message
-                });
-                return;
-            }
-            var id = result[0].count + 1;
-            var query = `INSERT INTO history (id, username, title, issued_at, returned_at) VALUES (${id}, '${req.body.username}', '${req.body.title}', CURDATE(), DATE_ADD(CURDATE(), INTERVAL 7 DAY));`;
-            dbConn.query(query, function (err, result) {
-                if (err) {
-                    res.render('error', {
-                        error: err,
-                        message: err.message
-                    });
-                    return;
-                }
-                dbConn.query(`DELETE FROM pending_approvals WHERE username='${req.body.username}' AND title='${req.body.title}';`, function (err, result) {
-                    if (err) {
-                        res.render('error', {
-                            error: err,
-                            message: err.message
-                        });
-                        return;
-                    }
-                    dbConn.query(`INSERT INTO currently_issued (id, username, title, issued_at) VALUES (${id}, '${req.body.username}', '${req.body.title}', CURDATE());`, function (err, result) {
-                        if (err) {
-                            res.render('error', {
-                                error: err,
-                                message: err.message
-                            });
-                            return;
-                        }
-                        dbConn.query("SELECT * FROM pending_approvals", function (err, result) {
-                            if (err) {
-                                res.render('error', {
-                                    error: err,
-                                    message: err.message
-                                });
-                                return;
-                            }
-                            res.render('manage_book_requests', {
-                                requests: result,
-                                message: 'Issue request approved successfully'
-                            });
-                        });
-                    });
-                });
-            });
-        });
-    } else if (req.body.type === '0') {
-        dbConn.query(`DELETE FROM pending_approvals WHERE username='${req.body.username}' AND title='${req.body.title}';`, function (err, result) {
-            if (err) {
-                res.render('error', {
-                    error: err,
-                    message: err.message
-                });
-                return;
-            }
-            dbConn.query(`DELETE FROM currently_issued WHERE username='${req.body.username}' AND title='${req.body.title}';`, function (err, result) {
-                if (err) {
-                    res.render('error', {
-                        error: err,
-                        message: err.message
-                    });
-                    return;
-                }
-                dbConn.query(`UPDATE history SET returned_at = CURDATE() WHERE username='${req.body.username}' AND title='${req.body.title}';`, function (err, result) {
-                    if (err) {
-                        res.render('error', {
-                            error: err,
-                            message: err.message
-                        });
-                        return;
-                    }
-                    dbConn.query("SELECT * FROM pending_approvals", function (err, result) {
-                        if (err) {
-                            res.render('error', {
-                                error: err,
-                                message: err.message
-                            });
-                            return;
-                        }
-                        res.render('manage_book_requests', {
-                            requests: result,
-                            message: 'Book returned successfully'
-                        });
-                    });
-                });
-            });
-        });
-    } else {
-        res.status(400).send('Bad Request');
-        return;
-    }
-});
-
-
-router.post('/requests/deny', auth, function (req, res, next) {
-    dbConn.query(`DELETE FROM pending_approvals WHERE username='${req.body.username}' AND title='${req.body.title}';`, function (err, result) {
+    dbConn.query("SELECT * FROM transactions", function (err, transactions) {
         if (err) {
             res.render('error', {
                 error: err,
@@ -266,19 +165,93 @@ router.post('/requests/deny', auth, function (req, res, next) {
             });
             return;
         }
-        dbConn.query("SELECT * FROM pending_approvals", function (err, result) {
-            if (err) {
-                res.render('error', {
-                    error: err,
-                    message: err.message
+        result = transactions.filter(item => parseInt(item.id) === parseInt(req.body.id));
+        if (result.length === 0 || parseInt(req.body.request_status) !== parseInt(result[0].request_status)) {
+            res.status(400).send('Bad Request');
+            return;
+        }
+        if (req.body.request_status == '-1') {
+            dbConn.query(`UPDATE transactions SET request_status='0', returned_at=CURRENT_DATE() WHERE id=${req.body.id};`, function (err, result) {
+                if (err) {
+                    res.render('error', {
+                        error: err,
+                        message: err.message
+                    });
+                    return;
+                }
+                transactions = transactions.filter(item => item.request_status !== 0 && parseInt(item.id) !== parseInt(req.body.id));
+                res.render('manage_book_requests', {
+                    message: 'Request Approved successfully, book issued',
+                    requests: transactions
                 });
-                return;
-            }
-            res.render('manage_book_requests', {
-                requests: result,
-                message: 'Request denied successfully'
             });
-        });
+        } else {
+            console.log(`UPDATE transactions SET request_status='0', issued_at=CURRENT_DATE() WHERE id=${req.body.id};`);
+            dbConn.query(`UPDATE transactions SET request_status='0', issued_at=CURRENT_DATE() WHERE id=${req.body.id};`, function (err, result) {
+                if (err) {
+                    res.render('error', {
+                        error: err,
+                        message: err.message
+                    });
+                    return;
+                }
+                transactions = transactions.filter(item => item.request_status !== 0 && parseInt(item.id) !== parseInt(req.body.id));
+                res.render('manage_book_requests', {
+                    message: 'Request Approved successfully, book issued',
+                    requests: transactions
+                });
+            });
+        }
+    });
+
+});
+
+
+router.post('/requests/deny', auth, function (req, res, next) {
+    dbConn.query("SELECT * FROM transactions", function (err, transactions) {
+        if (err) {
+            res.render('error', {
+                error: err,
+                message: err.message
+            });
+            return;
+        }
+        result = transactions.filter(item => parseInt(item.id) === parseInt(req.body.id));
+        if (result.length === 0 || parseInt(req.body.request_status) !== parseInt(result[0].request_status)) {
+            res.status(400).send('Bad Request');
+            return;
+        }
+        if (result[0].request_status === '1') {
+            dbConn.query(`DELETE from transactions WHERE id=${req.body.id};`, function (err, result) {
+                if (err) {
+                    res.render('error', {
+                        error: err,
+                        message: err.message
+                    });
+                    return;
+                }
+                transactions = transactions.filter(item => parseInt(item.id) !== parseInt(req.body.id));
+                res.render('manage_book_requests', {
+                    message: 'Request Denied successfully, book not issued',
+                    requests: transactions
+                });
+            });
+        } else {
+            dbConn.query(`UPDATE transactions SET request_status='0' WHERE id=${req.body.id};`, function (err, result) {
+                if (err) {
+                    res.render('error', {
+                        error: err,
+                        message: err.message
+                    });
+                    return;
+                }
+                transactions = transactions.filter(item => item.request_status !== 0 && parseInt(item.id) !== parseInt(req.body.id));
+                res.render('manage_book_requests', {
+                    message: 'Request Denied successfully, book not returned',
+                    requests: transactions
+                });
+            });
+        }
     });
 });
 

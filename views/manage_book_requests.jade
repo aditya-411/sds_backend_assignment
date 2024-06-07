@@ -54,15 +54,13 @@ html
                             tr
                                 td= request.username
                                 td= request.title
-                                td= request.type ? 'Issue' : 'Return'
+                                td= request.request_status=='1' ? 'Issue' : 'Return'
                                 td(class = "buttons")
                                     form(action="/admin/requests/approve", method="post")
-                                        input(type="hidden", name="username", value=request.username)
-                                        input(type="hidden", name="title", value=request.title)
-                                        input(type="hidden", name="type", value=request.type)
+                                        input(type="hidden", name="id", value=request.id)
+                                        input(type="hidden", name="request_status", value=request.request_status)
                                         button(type="submit") Approve
                                     form(action="/admin/requests/deny", method="post")
-                                        input(type="hidden", name="username", value=request.username)
-                                        input(type="hidden", name="title", value=request.title)
-                                        input(type="hidden", name="type", value=request.type)
+                                        input(type="hidden", name="id", value=request.id)
+                                        input(type="hidden", name="request_status", value=request.request_status)
                                         button(type="submit") Deny

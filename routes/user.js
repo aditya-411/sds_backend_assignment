@@ -71,7 +71,13 @@ router.post('/issue_confirm', auth, function (req, res, next) {
       });
       return;
     }
-    var id = result.length + 1;
+    var id;
+    if (result.length === 0){
+      id = 1;
+    } else{
+      var id = Math.max(...result.map(item => item.id)) + 1;
+    }
+
     dbConn.query("INSERT INTO transactions (id, title, username, request_status) VALUES (?, ?, ?, '1')", [id, req.body.title, req.user.username], function (err, result) {
       if (err) {
         res.render('error', {
