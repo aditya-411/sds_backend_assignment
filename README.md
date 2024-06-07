@@ -9,7 +9,7 @@
     * DB_USER  -> set this to the username for database, I used root user
     * DB_PASS  -> set this to the password for the user in database
     * DB_HOST  -> set it to '127.0.0.1'
-    * DATABASE  -> set it to the database name you chose while creating db
+    * DATABASE  -> "library" (or update database name in mysql and keep it whatever you want)
     * SALT_ROUNDS  -> set it to how many rounds of salting you want while encrypting passwords
     * JWT_SECRET  -> set it to the JWT secret you want
 5) use `npm start`

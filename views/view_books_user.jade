@@ -79,11 +79,8 @@ html
                                 td= new Date(new Date(book.issued_at).getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()
                                 td
                                     form(action="/user/return", method="POST")
+                                        input(type="hidden", name="id", value=book.id)
                                         input(type="hidden", name="title", value=book.title)
-                                        input(type="hidden", name="currentlyIssuedBooks", value=currentlyIssuedBooks)
-                                        input(type="hidden", name="pendingBooks", value=pendingBooks)
-                                        input(type="hidden", name="bookHistory", value=bookHistory)
-                                        input(type="hidden", name="allBooks", value=allBooks)
                                         button(type="submit") Return
         h2 Pending approvals
         .book-list
@@ -103,7 +100,7 @@ html
                             tr.book-item
                                 td= book.title
                                 td= allBooks.find(b => b.title === book.title).author
-                                td= book.type === 0 ? "Return" : "Issue"
+                                td= book.request_status === '-1' ? "Return" : "Issue"
         h2 Book History
         .book-list
             table
