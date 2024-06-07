@@ -179,14 +179,13 @@ router.post('/requests/approve', auth, function (req, res, next) {
                     });
                     return;
                 }
-                transactions = transactions.filter(item => item.request_status !== 0 && parseInt(item.id) !== parseInt(req.body.id));
+                transactions = transactions.filter(item => item.request_status !== '0' && parseInt(item.id) !== parseInt(req.body.id));
                 res.render('manage_book_requests', {
-                    message: 'Request Approved successfully, book issued',
+                    message: 'Request Approved successfully, book returned',
                     requests: transactions
                 });
             });
         } else {
-            console.log(`UPDATE transactions SET request_status='0', issued_at=CURRENT_DATE() WHERE id=${req.body.id};`);
             dbConn.query(`UPDATE transactions SET request_status='0', issued_at=CURRENT_DATE() WHERE id=${req.body.id};`, function (err, result) {
                 if (err) {
                     res.render('error', {
@@ -195,10 +194,11 @@ router.post('/requests/approve', auth, function (req, res, next) {
                     });
                     return;
                 }
-                transactions = transactions.filter(item => item.request_status !== 0 && parseInt(item.id) !== parseInt(req.body.id));
+                var show = transactions.filter(item => item.request_status !== '0' && parseInt(item.id) !== parseInt(req.body.id));
+                console.log(show);
                 res.render('manage_book_requests', {
                     message: 'Request Approved successfully, book issued',
-                    requests: transactions
+                    requests: show
                 });
             });
         }
@@ -230,10 +230,10 @@ router.post('/requests/deny', auth, function (req, res, next) {
                     });
                     return;
                 }
-                transactions = transactions.filter(item => parseInt(item.id) !== parseInt(req.body.id));
+                var show = transactions.filter(item => item.request_status !== '0' && parseInt(item.id) !== parseInt(req.body.id));
                 res.render('manage_book_requests', {
                     message: 'Request Denied successfully, book not issued',
-                    requests: transactions
+                    requests: show
                 });
             });
         } else {
@@ -245,10 +245,10 @@ router.post('/requests/deny', auth, function (req, res, next) {
                     });
                     return;
                 }
-                transactions = transactions.filter(item => item.request_status !== 0 && parseInt(item.id) !== parseInt(req.body.id));
+                var show = transactions.filter(item => item.request_status !== '0' && parseInt(item.id) !== parseInt(req.body.id));
                 res.render('manage_book_requests', {
                     message: 'Request Denied successfully, book not returned',
-                    requests: transactions
+                    requests: show
                 });
             });
         }

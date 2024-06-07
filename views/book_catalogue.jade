@@ -130,12 +130,17 @@ html
             tbody tr:hover {
                 background-color: #ddd;
             }
+            p{
+                color: #4CAF50;
+                font-size: 1.5rem;
+                text-align:center;
+            }
 
     body
         div(class="header1")
             h1 Books Catalogue
             form(action="/admin")
-                button(type="submit") Back to Home
+                button(type="submit") Admin Options
         p= locals.message ? message : ''
         div(class="search-bar")
             input(type="text", id="searchInput", placeholder="Search for books by title...")

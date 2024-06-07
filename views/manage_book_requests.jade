@@ -1,50 +1,161 @@
 doctype html
 html
     head
-        title Manage Book Requests
-        style.
-            /* Add your CSS styles here */
-            .table-container {
-                overflow-y: scroll;
-                max-height: 300px; /* Adjust the height as needed */
+        title Book Catalogue
+        style 
+            h1, h2 {
+                text-align: center;
+                color: #333;
             }
+            .book-item {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                padding: 1rem;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                margin-bottom: 1rem;
+                font-size: 2rem;
+                background-color: #f5f5f5;
+            }
+
+            .book-title {
+                font-weight: bold;
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+                width: 30vw;
+                text-align: center;
+                color: #333;
+            }
+
+            .book-issue {
+                text-align: center;
+            }
+
+            .book-author {
+                font-style: italic;
+                margin-bottom: 0.5rem;
+                width: 15vw;
+                text-align: center;
+                color: #666;
+            }
+
+            .book-publisher {
+                margin-bottom: 0.5rem;
+                width: 15vw;
+                text-align: center;
+                color: #666;
+            }
+
+            button {
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 3px;
+                cursor: pointer;
+                width: 15vw;
+                font-size: 1.5rem;
+            }
+
+            td, th {
+                border: 1px solid black;
+                padding: 0.5rem;
+                color: #333;
+                text-align: center;
+            }
+
+            .header1 {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-direction: row;
+                padding: 1rem;
+                color: white;
+            }
+
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f5f5f5;
+                margin: 0;
+                padding: 0;
+            }
+
+            .search-bar {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 1rem;
+                flex-direction: row;
+                overflow-x: auto;
+                text-align: center;
+            }
+
+            .search-bar input[type="text"] {
+                padding: 0.5rem;
+                font-size: 1.5rem;
+                width: 30vw;
+                border-radius: 3px;
+                border: 1px solid #ccc;
+            }
+
+            .search-bar button[type="button"] {
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 3px;
+                cursor: pointer;
+                font-size: 1.5rem;
+                margin-left: 1rem;
+                width: fit-content;
+            }
+
             table {
                 width: 100%;
                 border-collapse: collapse;
             }
-            th, td {
-                padding: 8px;
-                text-align: left;
-                border: 1px solid #ddd;
-            }
-            .request .title {
+
+            .header {
                 font-weight: bold;
+                background-color: #4CAF50;
+                color: white;
+                padding: 0.5rem;
+                text-align: center;
             }
-            .buttons {
+
+            tbody tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+
+            tbody tr:hover {
+                background-color: #ddd;
+            }
+            .buttons{
                 display:flex;
-                justify-content: space-between;
-                padding-left:20%;
-                padding-right: 20%;
+                justify-content: space-around;
             }
-            .header1{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-direction:row;
+
+            p{
+                color: #4CAF50;
+                font-size: 1.5rem;
+                text-align:center;
             }
+            
     body
         div(class="header1")
             h1 Manage Book Requests
-            a(href="/admin") Back to admin options
+            form(action="/admin")
+                button(type="submit") Admin Options
         p= locals.message ? message : ''
         .table-container
             table
                 thead
                     tr
-                        th Username
-                        th Title
-                        th Type
-                        th Actions
+                        th(class='header') Username
+                        th(class='header') Title
+                        th(class='header') Type
+                        th(class='header') Actions
                 tbody
                     if requests.length === 0
                         tr
@@ -55,12 +166,13 @@ html
                                 td= request.username
                                 td= request.title
                                 td= request.request_status=='1' ? 'Issue' : 'Return'
-                                td(class = "buttons")
-                                    form(action="/admin/requests/approve", method="post")
-                                        input(type="hidden", name="id", value=request.id)
-                                        input(type="hidden", name="request_status", value=request.request_status)
-                                        button(type="submit") Approve
-                                    form(action="/admin/requests/deny", method="post")
-                                        input(type="hidden", name="id", value=request.id)
-                                        input(type="hidden", name="request_status", value=request.request_status)
-                                        button(type="submit") Deny
+                                td 
+                                    div(class = "buttons")
+                                        form(action="/admin/requests/approve", method="post")
+                                            input(type="hidden", name="id", value=request.id)
+                                            input(type="hidden", name="request_status", value=request.request_status)
+                                            button(type="submit") Approve
+                                        form(action="/admin/requests/deny", method="post")
+                                            input(type="hidden", name="id", value=request.id)
+                                            input(type="hidden", name="request_status", value=request.request_status)
+                                            button(type="submit") Deny
