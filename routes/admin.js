@@ -257,10 +257,11 @@ router.post('/requests/deny', auth, function (req, res, next) {
 
 
 router.get('/access', auth, function (req, res, next) {
-    dbConn.query("SELECT * FROM admin_requests", function (err, result) {
+    dbConn.query(`SELECT * FROM users where isadmin=false AND admin_request=true`, function (err, result) {
         if (err) {
             res.render('error', {
-                error: err
+                error: err,
+                message: err.message
             });
             return;
         }
@@ -270,8 +271,8 @@ router.get('/access', auth, function (req, res, next) {
     });
 });
 
-router.post('/access/approve', auth, function (req, res, next) {
-    dbConn.query("UPDATE users SET isadmin=true WHERE username=?", [req.body.username], function (err, result) {
+router.post('/access/deny', auth, function (req, res, next) {
+    dbConn.query(`SELECT * FROM users where username='${req.body.username}'`, function (err, result) {
         if (err) {
             res.render('error', {
                 error: err,
@@ -279,7 +280,12 @@ router.post('/access/approve', auth, function (req, res, next) {
             });
             return;
         }
-        dbConn.query("DELETE FROM admin_requests WHERE username=?", [req.body.username], function (err, result) {
+        if (result.length === 0 || result[0].isadmin === 1 || result[0].admin_request === 0) {
+            res.status(400).send('Bad Request');
+            return;
+        }
+        var requests = result.filter(item => item.username !== req.body.username);
+        dbConn.query(`UPDATE users SET admin_request=false WHERE username='${req.body.username}';`, function (err, result) {
             if (err) {
                 res.render('error', {
                     error: err,
@@ -287,25 +293,18 @@ router.post('/access/approve', auth, function (req, res, next) {
                 });
                 return;
             }
-            dbConn.query("SELECT * FROM admin_requests", function (err, result) {
-                if (err) {
-                    res.render('error', {
-                        error: err,
-                        message: err.message
-                    });
-                    return;
-                }
-                res.render('admin_requests', {
-                    requests: result,
-                    message: 'Access granted successfully'
-                });
+            
+            res.render('admin_requests', {
+                message: 'Request Denied successfully',
+                requests: requests
             });
         });
     });
 });
 
-router.post('/access/deny', auth, function (req, res, next) {
-    dbConn.query("DELETE FROM admin_requests WHERE username=?", [req.body.username], function (err, result) {
+
+router.post('/access/approve', auth, function (req, res, next) {
+    dbConn.query(`SELECT * FROM users where username='${req.body.username}'`, function (err, result) {
         if (err) {
             res.render('error', {
                 error: err,
@@ -313,7 +312,12 @@ router.post('/access/deny', auth, function (req, res, next) {
             });
             return;
         }
-        dbConn.query("SELECT * FROM admin_requests", function (err, result) {
+        if (result.length === 0 || result[0].isadmin === 1 || result[0].admin_request === 0) {
+            res.status(400).send('Bad Request');
+            return;
+        }
+        var requests = result.filter(item => item.username !== req.body.username);
+        dbConn.query(`UPDATE users SET admin_request=false, isadmin=true WHERE username='${req.body.username}';`, function (err, result) {
             if (err) {
                 res.render('error', {
                     error: err,
@@ -322,8 +326,8 @@ router.post('/access/deny', auth, function (req, res, next) {
                 return;
             }
             res.render('admin_requests', {
-                requests: result,
-                message: 'Request denied successfully'
+                message: 'Request Approved successfully',
+                requests: requests
             });
         });
     });

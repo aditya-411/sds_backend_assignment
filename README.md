@@ -13,3 +13,5 @@
     * SALT_ROUNDS  -> set it to how many rounds of salting you want while encrypting passwords
     * JWT_SECRET  -> set it to the JWT secret you want
 5) use `npm start`
+
+(default admin is username='abc' and password='123456789' if you import my database)
