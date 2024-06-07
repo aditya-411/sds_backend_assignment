@@ -3,13 +3,13 @@ var router = express.Router();
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
 dotenv.config();
-var dbConn = require('../config/db');
+var dbConn = require('../utils/db');
 const {
     render
 } = require('../app');
 const saltRounds = parseInt(process.env.SALT_ROUNDS);
-const auth = require('../config/auth').login;
-const auth1 = require('../config/auth').normal;
+const auth = require('../utils/auth').login;
+const auth1 = require('../utils/auth').normal;
 
 
 // render login jade page

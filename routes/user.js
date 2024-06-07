@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var auth = require('../config/auth').normal;
-var dbConn = require('../config/db');
+var auth = require('../utils/auth').normal;
+var dbConn = require('../utils/db');
 
 /* GET users listing. */
 router.get('/', auth, function (req, res, next) {

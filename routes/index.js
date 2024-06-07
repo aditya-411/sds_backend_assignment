@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var auth = require('../config/auth').login;
+var auth = require('../utils/auth').login;
 
 /* GET home page. */
 router.get('/', auth , function(req, res, next) {
