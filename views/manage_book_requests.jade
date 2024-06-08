@@ -155,6 +155,7 @@ html
                         th(class='header') Username
                         th(class='header') Title
                         th(class='header') Type
+                        th(class='header') Fine
                         th(class='header') Actions
                 tbody
                     if requests.length === 0
@@ -166,6 +167,8 @@ html
                                 td= request.username
                                 td= request.title
                                 td= request.request_status=='1' ? 'Issue' : 'Return'
+                                - var return_date = new Date(new Date(request.issued_at).getTime() + 7 * 24 * 60 * 60 * 1000)
+                                td= new Date() <= return_date ? '₹0' : "₹" +  Math.ceil((new Date() - return_date) / (7 * 24 * 60 * 60 * 1000))*10
                                 td 
                                     div(class = "buttons")
                                         form(action="/admin/requests/approve", method="post")

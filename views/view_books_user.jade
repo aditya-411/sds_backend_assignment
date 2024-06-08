@@ -38,7 +38,7 @@ html
             th, td {
                 border: 1px solid #ccc;
                 padding: 1.5%;
-                text-align: left;
+                text-align: center;
                 font-size: 1.5vw;
             }
 
@@ -133,6 +133,7 @@ html
                         th(class='list-header') Author
                         th(class='list-header') Issue Date
                         th(class='list-header') Last Date to Return
+                        th(class='list-header') Fine
                         th(class='list-header') Actions
                 tbody
                     if currentlyIssuedBooks.length === 0
@@ -145,7 +146,9 @@ html
                                 td= book.title
                                 td= allBooks.find(b => b.title === book.title).author
                                 td= new Date(book.issued_at).toLocaleDateString()
-                                td= new Date(new Date(book.issued_at).getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()
+                                - var return_date = new Date(new Date(book.issued_at).getTime() + 7 * 24 * 60 * 60 * 1000)
+                                td= return_date.toLocaleDateString()
+                                td= new Date() <= return_date ? '₹0' : "₹" +  Math.ceil((new Date() - return_date) / (7 * 24 * 60 * 60 * 1000))*10
                                 td
                                     form(action="/user/return", method="POST")
                                         input(type="hidden", name="id", value=book.id)
